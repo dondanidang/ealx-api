@@ -1,0 +1,9 @@
+- id: poor
+  quality: poor
+  price: 10
+- id: fair
+  quality: fair
+  price: 20
+- id: good
+  quality: good
+  price: 40
