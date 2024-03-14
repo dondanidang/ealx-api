@@ -2,22 +2,30 @@
 
 module V1
   class OrderDiscountsController < ApplicationController
+    def index
+      order_discounts = OrderDiscount.all
+
+      render status: :ok, locals: { order_discounts: order_discounts }
+    end
+
     def create
       order_discount_params = params[:order_discount]
 
       order_discount = OrderDiscount.create!(
-        order_id: order_discount_params[:order_id],
+        order_number: order_discount_params[:order_number],
         price: order_discount_params[:price]
       )
 
-      pusher = Pusher::Client.new(
-        app_id: "1767517",
-        key: "a4fcad3ed2671add4b09",
-        secret: "9e615147abb07d914487",
-        cluster: "eu"
+      Pusher2.channel.trigger(
+        'order-discount',
+        'created',
+        {
+          id: order_discount.id,
+          price: order_discount.price,
+          order_number: order_discount.order_number,
+          created_at: order_discount.created_at
+        }
       )
-
-      pusher.trigger('order-discount', 'created', {order_id: order_discount.order_id, price: price})
 
       render status: :created, locals: { order_discount: order_discount }
     end

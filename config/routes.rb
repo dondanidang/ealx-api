@@ -9,7 +9,9 @@ Rails.application.routes.draw do
   # root "posts#index"
 
   namespace :v1, defaults: { format: :json } do
-    resources :quality_based_prices, only: %i[show]
+    resources :quality_based_prices, only: %i[] do
+      get :search, on: :collection
+    end
     resources :order_discounts, only: %i[create index]
   end
 end
